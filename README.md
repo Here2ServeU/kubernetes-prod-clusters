@@ -4,25 +4,41 @@ This guide walks you through how to provision infrastructure on AWS EKS, configu
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-emmanuel-k8s-prod/
-├── cleanup.sh
-├── manifests/
+emmanuel-services-infra/
+├── website/                          # React/Tailwind frontend (Dockerized)
+│   ├── Dockerfile
+│   └── index.html
+├── manifests/                        # Kubernetes deployment resources
 │   ├── deployment.yaml
 │   ├── service.yaml
+│   ├── rbac.yaml
 │   └── fluent-bit-elasticsearch.yaml
-├── helm/
-│   └── prometheus-stack/
-│       └── values.yaml
 ├── terraform/
 │   ├── aws/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   ├── outputs.tf
+│   │   ├── terraform.tfvars
+│   │   └── provider.tf
 │   ├── gcp/
+│   │   ├── main.tf
+│   │   └── ...
 │   └── azure/
-├── website/
-│   └── Dockerfile
-└── README.md
+│       ├── main.tf
+│       └── ...
+├── helm/
+│   └── prometheus-stack/
+│       └── values.yaml               # Slack alerting config here
+├── scripts/
+│   ├── cleanup.sh                    # Local cleanup script
+│   └── vpc-subnet-id-generate.sh    # AWS VPC/Subnet autofill
+├── test-alert.yaml                  # Test alert rule for Slack
+├── README.md
+├── .gitignore
+└── troubleshooting.md
 ```
 
 ---
