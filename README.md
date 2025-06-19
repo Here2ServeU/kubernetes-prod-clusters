@@ -74,6 +74,7 @@ Update the image URL in your Kubernetes manifest (`deployment.yaml`).
 
 ```bash
 kubectl apply -f ../manifests/deployment.yaml
+kubectl apply -f ../manifests/service.yaml
 ```
 
 ---
@@ -138,10 +139,78 @@ terraform init && terraform apply -auto-approve
 
 ---
 
+## Fixing kubectl Cluster Access Errors
+
+If you see the following error:
+
+```
+error validating data: failed to download openapi: Get "http://localhost:8080/openapi/v2?timeout=32s": dial tcp [::1]:8080: connect: connection refused
+```
+
+It means your `kubectl` is not connected to the Kubernetes cluster.
+
+### Fix Steps
+
+1. **Check if Kubernetes context is configured**  
+```bash
+kubectl config current-context
+```
+
+2. **Connect to EKS Cluster**  
+```bash
+aws eks update-kubeconfig --region us-east-1 --name emmanuel-cluster
+kubectl get nodes
+```
+
+3. **Retry Deployment**  
+```bash
+kubectl apply -f manifests/deployment.yaml
+kubectl apply -f manifests/service.yaml
+```
+
+---
+
+## Cleanup Resources
+
+To avoid ongoing AWS charges:
+
+### Destroy Terraform Infrastructure
+
+```bash
+cd terraform/aws
+terraform destroy -auto-approve
+```
+
+### Delete Docker Images from ECR (optional)
+
+```bash
+aws ecr delete-repository --repository-name emmanuel-services --force
+```
+
+### Clean Up Kubeconfig Context (optional)
+
+```bash
+kubectl config delete-context <context-name>
+```
+
+### Local Docker and Terraform Cleanup
+
+Run the included script to clean up local Docker resources and Terraform files:
+
+```bash
+chmod +x cleanup.sh
+./cleanup.sh
+```
+
+The script will:
+- Remove unused Docker containers, images, volumes, and networks
+- Delete `.terraform` directories and Terraform state files
+
+---
+
 ## Author
 
 **Emmanuel Naweji**  
 Cloud | DevOps | SRE | FinOps | AI Engineer  
 Modernizing infrastructure and mentoring the next generation of elite engineers.
 
----

@@ -1,0 +1,48 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+override.tf
+override.tf.json
+crash.log
+*.tfplan
+.terraform.lock.hcl
+
+# Node modules
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.env.*
+
+# Docker
+*.log
+*.pid
+docker-compose.override.yml
+
+# Kubernetes secrets
+secrets.yaml
+*secrets*.yaml
+
+# Helm
+charts/
+*.tgz
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/
