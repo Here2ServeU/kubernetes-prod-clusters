@@ -24,11 +24,11 @@ emmanuel-services-infra/
 │   │   ├── terraform.tfvars
 │   │   └── provider.tf
 │   ├── gcp/
-│   │   ├── main.tf
-│   │   └── ...
-│   └── azure/
-│       ├── main.tf
-│       └── ...
+│   │   └── main.tf
+│   ├── azure/
+│   │   └── main.tf
+│   └── kubeadm/
+│       └── setup-kubeadm.sh
 ├── helm/
 │   └── prometheus-stack/
 │       └── values.yaml               # Slack alerting config here
@@ -40,8 +40,6 @@ emmanuel-services-infra/
 ├── .gitignore
 └── troubleshooting.md
 ```
-
----
 
 ## Step 1: Prerequisites
 
@@ -142,7 +140,7 @@ Access Grafana:
 kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
 ```
 
-Go to: http://localhost:3000 (login: admin/admin)
+Visit: http://localhost:3000 (login: admin/admin)
 
 ---
 
@@ -173,7 +171,7 @@ alertmanager:
 3. Upgrade Helm release:
 
 ```bash
-helm upgrade --install monitoring prometheus-community/kube-prometheus-stack   -n monitoring -f helm/prometheus-stack/values.yaml
+helm upgrade --install monitoring prometheus-community/kube-prometheus-stack -n monitoring -f helm/prometheus-stack/values.yaml
 ```
 
 ---
@@ -186,50 +184,39 @@ kubectl apply -f manifests/fluent-bit-elasticsearch.yaml
 
 ---
 
-## Optional: Deploy to GCP or Azure
+## Optional: Deploy to GCP, Azure, or On-Prem
 
-### GKE
+### GKE (Google Cloud)
 
 ```bash
 cd terraform/gcp
 terraform init && terraform apply -auto-approve
 ```
 
-### AKS
+### AKS (Azure)
 
 ```bash
 cd terraform/azure
 terraform init && terraform apply -auto-approve
 ```
 
----
+### On-Prem with Kubeadm
 
-## Fixing kubectl Cluster Access Errors
+Use the `terraform/kubeadm/setup-kubeadm.sh` script to initialize your cluster.
 
-```
-error validating data: failed to download openapi: Get "http://localhost:8080/openapi/v2": dial tcp [::1]:8080: connect: connection refused
-```
-
-**Fix**:
+Then deploy:
 
 ```bash
-kubectl config current-context
-aws eks update-kubeconfig --region us-east-1 --name emmanuel-cluster
-kubectl get nodes
-```
-
-Then retry:
-
-```bash
+kubectl apply -f manifests/rbac.yaml
 kubectl apply -f manifests/deployment.yaml
 kubectl apply -f manifests/service.yaml
 ```
 
+(Optionally install monitoring with Helm as in Step 7.)
+
 ---
 
 ## Cleanup Resources
-
-To avoid AWS charges:
 
 ### Destroy Terraform Infrastructure
 

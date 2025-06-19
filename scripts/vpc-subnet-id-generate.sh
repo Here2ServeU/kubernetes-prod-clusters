@@ -20,7 +20,7 @@ echo "Detected VPC: $VPC_ID"
 echo "Detected Subnets in valid AZs: $HCL_SUBNET_IDS"
 
 # Update terraform.tfvars
-sed -i '' -E "s|^vpc_id *=.*|vpc_id = \"$VPC_ID\"|" terraform.tfvars
-sed -i '' -E "s|^subnet_ids *=.*|subnet_ids = $HCL_SUBNET_IDS|" terraform.tfvars
+sed -i '' -E "s|^vpc_id *=.*|vpc_id = \"$VPC_ID\"|" ../terraform/aws/terraform.tfvars
+sed -i '' -E "s|^subnet_ids *=.*|subnet_ids = $HCL_SUBNET_IDS|" ../terraform/aws/terraform.tfvars
 
 echo "✅ terraform.tfvars has been updated with valid subnets!"
